@@ -145,6 +145,60 @@ class UnionFind:
             self.parents[pu] = pv
             self.sizes[pv] += self.sizes[pu]
 
+
+def generate_prim(n, m):
+    grid = []
+    for i in range(2 * N + 1):
+        grid.append([2] * (2 * M + 1))
+
+    prim(grid)
+
+    start = (1, 0)
+    end = (2 * N - 1, 2 * M)
+    grid[start[0]][start[1]] = 0
+    grid[end[0]][end[1]] = 0
+    return grid, start, end
+
+
+def prim(grid):
+    N = len(grid)
+    M = len(grid[0])
+
+    def get_walls(u):
+        directions = [
+            (2, 0),
+            (-2, 0),
+            (0, 2),
+            (0, -2),
+        ]
+        x, y = u
+        for direction in directions:
+            xx = x + direction[0]
+            yy = y + direction[1]
+            if 0 <= xx < N and 0 <= yy < M:
+                yield (u, (xx, yy))
+
+    seen = set()
+    walls = list()
+
+    u = (1, 1)
+    grid[u[0]][u[1]] = 0
+    seen.add(u)
+    walls.extend(get_walls(u))
+    while walls:
+        i = random.randrange(len(walls))
+        u, v = walls.pop(i)
+        grid[u[0]][u[1]] = 0
+        grid[v[0]][v[1]] = 0
+        animate_grid(grid)
+        if v not in seen or u not in seen:
+            unseen = v if v not in seen else u
+            w = ((u[0] + v[0]) // 2, (u[1] + v[1]) // 2)
+            grid[w[0]][w[1]] = 0
+            seen.add(unseen)
+            walls.extend(get_walls(unseen))
+
+
 def solve_dfs(grid, start, end):
 
     def get_adjacent(grid, p):
@@ -278,9 +332,10 @@ def color_path(grid, end, parents):
 
 
 N, M = 25, 52
-# N, M = 13, 14
-grid, start, end = generate_dfs(N, M)
+# N, M = 3, 4
+# grid, start, end = generate_dfs(N, M)
 # grid, start, end = generate_kruskal(N, M)
+grid, start, end = generate_prim(N, M)
 
 # solve_dfs(grid, start, end)
 # solve_bfs(grid, start, end)
