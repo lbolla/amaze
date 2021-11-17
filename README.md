@@ -2,6 +2,8 @@
 
 These are some experiments with maze generators and solvers.
 
+See https://en.wikipedia.org/wiki/Maze_generation_algorithm
+
 Generators:
 
 - DFS
